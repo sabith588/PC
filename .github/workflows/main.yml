@@ -10,6 +10,7 @@ jobs:
 
     steps:
       - name: Configure Core RDP Settings
+        shell: pwsh
         run: |
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' `
             -Name "fDenyTSConnections" -Value 0 -Force
@@ -28,6 +29,7 @@ jobs:
           Restart-Service -Name TermService -Force
 
       - name: Create RDP User (Password from Secret)
+        shell: pwsh
         run: |
           $plainPass = "${{ secrets.RDP_PASSWORD }}"
           if ($plainPass.Length -lt 8) {
@@ -47,6 +49,7 @@ jobs:
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP" -ErrorAction SilentlyContinue
 
       - name: Install Tailscale
+        shell: pwsh
         run: |
           $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi"
           $installerPath = "$env:TEMP\tailscale.msi"
@@ -56,6 +59,7 @@ jobs:
           Remove-Item $installerPath -Force
 
       - name: Establish Tailscale Connection
+        shell: pwsh
         run: |
           & "$env:ProgramFiles\Tailscale\tailscale.exe" up `
             --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} `
@@ -76,6 +80,7 @@ jobs:
           echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
 
       - name: Verify RDP Accessibility
+        shell: pwsh
         run: |
           Write-Host "Tailscale IP: $env:TAILSCALE_IP"
           $test = Test-NetConnection -ComputerName $env:TAILSCALE_IP -Port 3389
@@ -88,6 +93,7 @@ jobs:
           Write-Host "RDP port is reachable"
 
       - name: Maintain Connection
+        shell: pwsh
         run: |
           Write-Host "=== RDP ACCESS ==="
           Write-Host "Address : $env:TAILSCALE_IP"
@@ -98,3 +104,4 @@ jobs:
           while ($true) {
               Start-Sleep -Seconds 300
           }
+
