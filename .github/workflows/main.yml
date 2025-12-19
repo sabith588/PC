@@ -81,7 +81,7 @@ jobs:
 
           Write-Host "RDP port is reachable"
 
-      - name: Maintain Connection
+           - name: Maintain Connection
         run: |
           Write-Host "=== RDP ACCESS ==="
           Write-Host "Address : $env:TAILSCALE_IP"
@@ -91,3 +91,4 @@ jobs:
 
           while ($true) {
               Start-Sleep -Seconds 300
+          }
