@@ -81,7 +81,7 @@ jobs:
 
           Write-Host "RDP port is reachable"
 
-           - name: Maintain Connection
+                 - name: Maintain Connection
         run: |
           Write-Host "=== RDP ACCESS ==="
           Write-Host "Address : $env:TAILSCALE_IP"
@@ -89,6 +89,6 @@ jobs:
           Write-Host "Password: (from GitHub Secret)"
           Write-Host "=================="
 
-          while ($true) {
+          for ($i = 0; $i -lt 720; $i++) {
               Start-Sleep -Seconds 300
           }
